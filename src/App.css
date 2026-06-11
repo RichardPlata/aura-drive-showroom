@@ -1,0 +1,2470 @@
+/* =========================================================
+   AURA Drive — Clean App.css
+   Consolidated from the previous App.css.
+   Replace your current App.css with this file.
+   ========================================================= */
+
+/* ---------- Design tokens ---------- */
+:root {
+  --bg: #0b1117;
+  --panel: rgba(5, 10, 16, 0.985);
+  --panel-soft: rgba(255, 255, 255, 0.045);
+  --panel-border: rgba(255, 255, 255, 0.08);
+  --text: #f5f7fa;
+  --muted: #aab4c3;
+  --accent: #4fc3f7;
+  --green: #66bb6a;
+  --red: #ff4d4d;
+  --purple: #8b5cf6;
+  --radius-lg: 24px;
+  --radius-md: 16px;
+  --radius-sm: 12px;
+}
+
+/* ---------- Base layout ---------- */
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.app,
+.showroom {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.title {
+  position: absolute;
+  top: 32px;
+  left: 40px;
+  z-index: 10;
+  text-align: left;
+  pointer-events: none;
+}
+
+.title h1 {
+  margin: 0 0 4px;
+  font-size: 40px;
+  line-height: 1;
+}
+
+.title p {
+  margin: 0;
+  color: var(--muted);
+}
+
+/* ---------- Hotspots / global buttons ---------- */
+.hotspot {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(79, 195, 247, 0.7);
+  background: rgba(79, 195, 247, 0.12);
+  color: var(--text);
+  font-size: 13px;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+}
+
+.hotspot span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 12px var(--accent);
+}
+
+.exit-button,
+.enter-ui-view-button {
+  position: absolute;
+  z-index: 90;
+  height: 38px;
+  padding: 0 18px;
+  border-radius: 999px;
+  border: 1px solid rgba(79, 195, 247, 0.68);
+  background: rgba(5, 10, 16, 0.72);
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 0 18px rgba(79, 195, 247, 0.16);
+}
+
+.exit-button {
+  top: 32px;
+  right: 40px;
+}
+
+.enter-ui-view-button {
+  top: 128px;
+  left: 50%;
+  transform: translateX(155px);
+}
+
+.exit-button:hover,
+.enter-ui-view-button:hover {
+  background: rgba(79, 195, 247, 0.18);
+}
+
+/* ---------- Transition fade ---------- */
+.screen-fade {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  pointer-events: none;
+  background: #02060a;
+  opacity: 0;
+  transition: opacity 0.55s ease;
+}
+
+.screen-fade.active {
+  opacity: 1;
+}
+
+/* =========================================================
+   3D Anchored HTML overlays
+   ========================================================= */
+
+/* Center screen embedded over the GLB display */
+.anchored-center-ui {
+  transform: scale(0.57) translateX(64px) translateY(2px);
+  transform-origin: center center;
+}
+
+.anchored-center-ui .center-screen-overlay {
+  position: static;
+  inset: auto;
+  z-index: auto;
+}
+
+.anchored-center-ui .center-screen-panel.figma-hmi {
+  width: 560px;
+  height: 248px;
+  min-height: 248px;
+  max-height: 248px;
+  padding: 8px 12px 42px;
+  border-radius: 18px;
+}
+
+/* Cluster embedded over the GLB gauges */
+.anchored-cluster-ui {
+  transform: scale(0.45) translateX(-2px) translateY(42px);
+  transform-origin: center center;
+  pointer-events: none;
+}
+
+.anchored-cluster-ui .cluster-overlay {
+  position: static;
+  inset: auto;
+  transform: none;
+  z-index: auto;
+}
+
+.anchored-cluster-ui .cluster-card,
+.anchored-cluster-ui .cluster-off-placeholder.embedded {
+  width: 430px;
+  height: 190px;
+  border-radius: 30px;
+  padding: 18px 28px 30px;
+}
+
+.anchored-cluster-ui .cluster-card {
+  animation: clusterScreenIn 0.55s ease both;
+}
+
+.anchored-cluster-ui .cluster-footer {
+  bottom: 24px;
+}
+
+.anchored-cluster-ui .cluster-top small {
+  display: none;
+}
+
+/* Offline cluster overlay */
+.cluster-off-placeholder {
+  width: 400px;
+  height: 196px;
+  border-radius: 34px;
+  display: grid;
+  place-items: center;
+  color: rgba(245, 247, 250, 0.35);
+  background: rgba(5, 10, 16, 0.48);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.cluster-off-placeholder.embedded {
+  color: rgba(245, 247, 250, 0.42);
+  background:
+    radial-gradient(circle at center, rgba(79, 195, 247, 0.08), transparent 55%),
+    rgba(5, 10, 16, 0.92);
+  border-color: rgba(79, 195, 247, 0.32);
+  box-shadow:
+    0 0 20px rgba(79, 195, 247, 0.15),
+    inset 0 0 24px rgba(255, 255, 255, 0.025);
+}
+
+.cluster-off-placeholder span {
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+/* =========================================================
+   Center screen system
+   ========================================================= */
+
+.center-screen-overlay {
+  position: absolute;
+  right: 40px;
+  bottom: 40px;
+  z-index: 12;
+}
+
+.center-screen-panel {
+  position: relative;
+  width: 460px;
+  min-height: 330px;
+  padding: 14px 14px 64px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  color: var(--text);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.045), transparent 35%),
+    rgba(5, 10, 16, 0.92);
+  border: 1px solid color-mix(in srgb, var(--screen-accent, var(--accent)) 45%, transparent);
+  box-shadow:
+    0 0 34px color-mix(in srgb, var(--screen-accent, var(--accent)) 18%, transparent),
+    inset 0 0 34px rgba(255, 255, 255, 0.025);
+  transition:
+    border-color 0.45s ease,
+    box-shadow 0.45s ease,
+    background 0.45s ease;
+}
+
+.center-screen-panel.figma-hmi {
+  background: rgba(5, 10, 16, 0.985);
+}
+
+.figma-status {
+  height: 14px;
+  margin-bottom: 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--muted);
+  font-size: 9px;
+}
+
+.figma-status div:last-child {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.figma-content {
+  position: relative;
+  height: 184px;
+  overflow: hidden;
+}
+
+.figma-bottom-nav {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 8px;
+  height: 32px;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+  padding: 4px;
+  border-radius: 13px;
+  background: rgba(0, 0, 0, 0.46);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.figma-bottom-nav button {
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.figma-bottom-nav button.active {
+  color: var(--screen-accent, var(--accent));
+  background: color-mix(in srgb, var(--screen-accent, var(--accent)) 14%, transparent);
+  box-shadow: inset 0 -2px 0 var(--screen-accent, var(--accent));
+}
+
+.figma-back {
+  position: absolute;
+  top: 5px;
+  left: 6px;
+  z-index: 50;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 9px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.055);
+  color: var(--text);
+  font-size: 10px;
+  cursor: pointer;
+}
+
+.figma-content .figma-back ~ section {
+  padding-top: 32px;
+  box-sizing: border-box;
+}
+
+/* ---------- START / OFF screen ---------- */
+.start-hmi-panel {
+  background:
+    radial-gradient(circle at 50% 42%, rgba(79, 195, 247, 0.12), transparent 42%),
+    rgba(2, 6, 12, 0.98);
+}
+
+.start-screen {
+  position: relative;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  text-align: center;
+}
+
+.start-screen-copy span {
+  color: var(--screen-accent, var(--accent));
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.18em;
+}
+
+.start-screen-copy h1 {
+  margin: 8px 0 6px;
+  color: var(--text);
+  font-size: 26px;
+}
+
+.start-screen-copy p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.start-button {
+  width: 104px;
+  height: 104px;
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, var(--screen-accent, var(--accent)) 70%, transparent);
+  background:
+    radial-gradient(circle at 34% 28%, rgba(255, 255, 255, 0.85), transparent 10%),
+    color-mix(in srgb, var(--screen-accent, var(--accent)) 35%, rgba(5, 10, 16, 0.95));
+  color: var(--text);
+  font-size: 17px;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  cursor: pointer;
+  box-shadow:
+    0 0 26px color-mix(in srgb, var(--screen-accent, var(--accent)) 45%, transparent),
+    inset 0 0 22px rgba(255, 255, 255, 0.08);
+  animation: startPulse 2.2s ease-in-out infinite;
+}
+
+.start-button:hover {
+  transform: scale(1.04);
+}
+
+.start-system-row {
+  position: absolute;
+  left: 18px;
+  right: 18px;
+  bottom: 10px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.start-system-row div {
+  height: 28px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  color: rgba(245, 247, 250, 0.45);
+  font-size: 9px;
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(255, 255, 255, 0.055);
+}
+
+/* ---------- Boot sequence ---------- */
+.boot-hmi-panel {
+  overflow: hidden;
+}
+
+.boot-sequence-screen.premium-boot,
+.premium-boot {
+  position: relative;
+  height: 100%;
+  min-height: 220px;
+  padding: 26px 30px 22px;
+  display: grid;
+  grid-template-columns: 1.05fr 1fr;
+  align-items: center;
+  gap: 22px;
+  background:
+    radial-gradient(circle at 25% 45%, rgba(79, 195, 247, 0.22), transparent 32%),
+    radial-gradient(circle at 80% 50%, rgba(79, 195, 247, 0.08), transparent 36%),
+    linear-gradient(135deg, rgba(2, 8, 14, 0.98), rgba(5, 13, 22, 0.98));
+}
+
+.boot-left {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.boot-left span {
+  color: var(--screen-accent, var(--accent));
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.boot-left h1 {
+  margin: 4px 0;
+  color: var(--text);
+  font-size: 24px;
+  letter-spacing: 0.02em;
+}
+
+.boot-left p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.boot-orb {
+  flex: 0 0 auto;
+  width: 62px;
+  height: 62px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 34% 28%, rgba(255, 255, 255, 0.95), transparent 10%),
+    radial-gradient(circle at 40% 36%, rgba(255, 255, 255, 0.35), transparent 24%),
+    var(--screen-accent, var(--accent));
+  box-shadow:
+    0 0 24px var(--screen-accent, var(--accent)),
+    0 0 70px color-mix(in srgb, var(--screen-accent, var(--accent)) 70%, transparent);
+  animation: bootOrbPulse 2s ease-in-out infinite;
+}
+
+.boot-checklist {
+  display: grid;
+  gap: 9px;
+}
+
+.boot-checklist div {
+  height: 30px;
+  padding: 0 12px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: rgba(210, 225, 235, 0.48);
+  font-size: 11px;
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(255, 255, 255, 0.055);
+}
+
+.boot-checklist div span {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: rgba(160, 175, 185, 0.35);
+}
+
+.boot-checklist div.active {
+  color: var(--text);
+  border-color: color-mix(in srgb, var(--screen-accent, var(--accent)) 38%, transparent);
+  background: color-mix(in srgb, var(--screen-accent, var(--accent)) 10%, rgba(255, 255, 255, 0.035));
+}
+
+.boot-checklist div.active span {
+  background: var(--screen-accent, var(--accent));
+  box-shadow: 0 0 14px var(--screen-accent, var(--accent));
+}
+
+.boot-progress {
+  position: absolute;
+  left: 30px;
+  right: 30px;
+  bottom: 18px;
+  height: 4px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.boot-progress span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--screen-accent, var(--accent));
+  box-shadow: 0 0 18px var(--screen-accent, var(--accent));
+  transition: width 0.55s ease;
+}
+
+.boot-progress .stage-1 { width: 22%; }
+.boot-progress .stage-2 { width: 48%; }
+.boot-progress .stage-3 { width: 74%; }
+.boot-progress .stage-4 { width: 100%; }
+
+/* =========================================================
+   Center screen pages
+   ========================================================= */
+
+/* Welcome */
+.figma-welcome-screen {
+  height: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr auto;
+  gap: 8px;
+  animation: welcomeBootIn 0.9s ease both;
+}
+
+.figma-welcome-copy {
+  padding: 14px 8px;
+}
+
+.figma-welcome-copy h2 {
+  margin: 0 0 4px;
+  font-size: 20px;
+}
+
+.figma-welcome-copy p {
+  margin: 0;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.figma-car-hero {
+  position: relative;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 62% 45%, rgba(79, 195, 247, 0.2), transparent 46%),
+    rgba(255, 255, 255, 0.035);
+}
+
+.figma-car-glow {
+  position: absolute;
+  inset: 30px 18px;
+  background: radial-gradient(circle, rgba(79, 195, 247, 0.45), transparent 62%);
+  filter: blur(12px);
+  animation: welcomeGlowPulse 2.4s ease-in-out infinite;
+}
+
+.figma-car-body {
+  position: absolute;
+  left: 36px;
+  right: 28px;
+  top: 42px;
+  height: 34px;
+  border-radius: 999px 999px 20px 20px;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,0.32), rgba(79,195,247,0.12)),
+    rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.14);
+  box-shadow: 0 0 24px rgba(79,195,247,0.2);
+  animation: welcomeCarReveal 1.1s ease 0.35s both;
+}
+
+.figma-status-cards {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.figma-status-cards div {
+  min-height: 50px;
+  padding: 9px 10px;
+  border-radius: 13px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 8px;
+  align-items: center;
+  background: var(--panel-soft);
+  border: 1px solid var(--panel-border);
+  animation: welcomeCardsIn 0.75s ease both;
+}
+
+.figma-status-cards div:nth-child(1) { animation-delay: 0.55s; }
+.figma-status-cards div:nth-child(2) { animation-delay: 0.7s; }
+.figma-status-cards div:nth-child(3) { animation-delay: 0.85s; }
+
+.figma-status-cards svg {
+  grid-row: 1 / 3;
+  color: var(--screen-accent, var(--accent));
+  font-size: 20px;
+}
+
+.figma-status-cards span {
+  font-size: 10px;
+  color: var(--muted);
+}
+
+.figma-status-cards strong {
+  color: var(--text);
+  font-size: 18px;
+}
+
+.figma-status-cards small {
+  color: var(--screen-accent, var(--accent));
+  font-size: 9px;
+}
+
+/* Home apps */
+.figma-apps-screen,
+.apps-screen {
+  height: 100%;
+  display: grid;
+  place-items: center;
+}
+
+.figma-app-grid,
+.apps-grid {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 9px;
+}
+
+.figma-app-card,
+.app-tile {
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.075);
+  background: rgba(255,255,255,0.04);
+  color: var(--text);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  text-align: center;
+}
+
+.figma-app-card span,
+.app-tile span {
+  color: var(--screen-accent, var(--accent));
+  font-size: 26px;
+}
+
+.figma-app-card strong,
+.app-tile strong {
+  white-space: pre-line;
+  font-size: 12px;
+  line-height: 1.18;
+  margin-top: -8px;
+}
+
+/* More */
+.figma-more-screen {
+  height: 100%;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 8px;
+}
+
+.figma-more-title h2 {
+  margin: 0 0 3px;
+  font-size: 18px;
+}
+
+.figma-more-title p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.figma-more-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.figma-more-grid button {
+  border-radius: 13px;
+  border: 1px solid rgba(255,255,255,0.075);
+  background: rgba(255,255,255,0.04);
+  color: var(--text);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 8px;
+}
+
+.figma-more-grid span {
+  color: var(--screen-accent, var(--accent));
+  font-size: 20px;
+}
+
+.figma-more-grid strong {
+  font-size: 10px;
+}
+
+/* Navigation */
+.figma-navigation-screen {
+  height: 100%;
+  padding-top: 30px;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: 0.75fr 1.25fr;
+  grid-template-rows: 1fr auto;
+  gap: 8px;
+}
+
+.figma-nav-info,
+.figma-nav-map,
+.figma-nav-stats div,
+.figma-nav-stats button {
+  border-radius: 13px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.figma-nav-info {
+  padding: 9px;
+}
+
+.figma-nav-info svg {
+  color: var(--screen-accent, var(--accent));
+  font-size: 17px;
+}
+
+.figma-nav-info h2 {
+  margin: 4px 0 0;
+  font-size: 23px;
+}
+
+.figma-nav-info p {
+  margin: 2px 0 8px;
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.figma-nav-info small {
+  display: flex;
+  gap: 4px;
+  color: var(--muted);
+  font-size: 9px;
+}
+
+.figma-nav-map {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 62% 50%, rgba(79,195,247,0.18), transparent 45%),
+    rgba(255,255,255,0.035);
+}
+
+.figma-nav-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+  background-size: 24px 24px;
+  transform: perspective(180px) rotateX(58deg) scale(1.4);
+}
+
+.figma-nav-route {
+  position: absolute;
+  right: 58px;
+  top: -20px;
+  width: 5px;
+  height: 180px;
+  border-radius: 999px;
+  background: var(--screen-accent, var(--accent));
+  transform: rotate(45deg);
+  box-shadow: 0 0 20px var(--screen-accent, var(--accent));
+}
+
+.figma-nav-car {
+  position: absolute;
+  right: 72px;
+  bottom: 44px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--screen-accent, var(--accent));
+  box-shadow: 0 0 16px var(--screen-accent, var(--accent));
+}
+
+.figma-nav-stats {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1.15fr;
+  gap: 7px;
+}
+
+.figma-nav-stats div,
+.figma-nav-stats button {
+  min-height: 38px;
+  padding: 7px;
+  color: var(--text);
+}
+
+.figma-nav-stats strong {
+  display: block;
+  font-size: 13px;
+}
+
+.figma-nav-stats span {
+  color: var(--muted);
+  font-size: 9px;
+}
+
+.figma-nav-stats button {
+  cursor: pointer;
+  font-size: 10px;
+}
+
+/* Drive */
+.figma-drive-screen {
+  height: 100%;
+  padding-top: 28px;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: 0.8fr 1.2fr;
+  grid-template-rows: 1fr 38px;
+  gap: 5px;
+}
+
+.figma-drive-copy h2 {
+  margin: 0 0 4px;
+  font-size: 16px;
+}
+
+.figma-drive-copy p {
+  margin: 0 0 5px;
+  color: var(--muted);
+  font-size: 9px;
+}
+
+.figma-drive-list {
+  display: grid;
+  gap: 3px;
+}
+
+.figma-drive-list button {
+  height: 21px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.04);
+  color: var(--muted);
+  font-size: 8px;
+  text-align: left;
+  padding: 0 10px;
+  cursor: pointer;
+}
+
+.figma-drive-list button.active {
+  color: var(--mode-color);
+  border-color: var(--mode-color);
+  background: color-mix(in srgb, var(--mode-color) 13%, transparent);
+}
+
+.figma-drive-visual {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-md);
+  background:
+    radial-gradient(circle at 60% 50%, color-mix(in srgb, var(--screen-accent, var(--accent)) 20%, transparent), transparent 42%),
+    rgba(255,255,255,0.03);
+}
+
+.figma-drive-car {
+  position: absolute;
+  left: 45px;
+  right: 30px;
+  top: 48px;
+  height: 30px;
+  border-radius: 999px 999px 18px 18px;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,0.35), color-mix(in srgb, var(--screen-accent, var(--accent)) 24%, transparent)),
+    rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.15);
+}
+
+.figma-drive-lines {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(115deg, transparent 8%, color-mix(in srgb, var(--screen-accent, var(--accent)) 35%, transparent) 50%, transparent 75%);
+  animation: driveEnergyMove 2.4s ease-in-out infinite;
+}
+
+.figma-drive-features {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 7px;
+}
+
+.figma-drive-features div {
+  padding: 4px;
+  border-radius: 11px;
+  text-align: center;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.figma-drive-features svg {
+  color: var(--screen-accent, var(--accent));
+  font-size: 13px;
+}
+
+.figma-drive-features span {
+  display: block;
+  color: var(--muted);
+  font-size: 7.5px;
+  line-height: 1.1;
+}
+
+/* Vehicle health */
+.figma-health-screen {
+  height: 100%;
+  padding-top: 28px;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: 1fr 1.15fr;
+  gap: 10px;
+}
+
+.figma-health-copy h2 {
+  margin: 0 0 4px;
+  font-size: 19px;
+}
+
+.figma-health-copy p {
+  margin: 0 0 8px;
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.figma-health-list {
+  display: grid;
+  gap: 5px;
+}
+
+.figma-health-list div {
+  height: 22px;
+  padding: 0 8px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(255,255,255,0.04);
+  font-size: 10px;
+}
+
+.figma-health-list span {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--muted);
+}
+
+.figma-health-list svg,
+.figma-health-list strong {
+  color: var(--green);
+}
+
+.figma-health-car {
+  position: relative;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background:
+    radial-gradient(circle at center, rgba(102,187,106,0.18), transparent 48%),
+    rgba(255,255,255,0.03);
+}
+
+.health-car-shape {
+  position: absolute;
+  left: 42px;
+  right: 38px;
+  top: 62px;
+  height: 34px;
+  border-radius: 999px 999px 18px 18px;
+  background: rgba(102,187,106,0.16);
+  border: 1px solid rgba(102,187,106,0.5);
+  box-shadow: 0 0 28px rgba(102,187,106,0.28);
+}
+
+.health-node,
+.health-dot {
+  position: absolute;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 14px var(--green);
+}
+
+.health-node {
+  width: 13px;
+  height: 13px;
+}
+
+.health-node.n1 { left: 64px; top: 55px; }
+.health-node.n2 { right: 62px; top: 72px; }
+.health-node.n3 { left: 112px; bottom: 42px; }
+
+/* Climate */
+.figma-climate-screen {
+  position: relative;
+  height: 100%;
+  padding: 30px 0 28px;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-rows: 58px 1fr 24px;
+  gap: 7px;
+}
+
+.figma-climate-main,
+.figma-climate-grid div {
+  border-radius: 14px;
+  background: rgba(255,255,255,0.045);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.figma-climate-main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 12px;
+}
+
+.figma-climate-main h2 {
+  margin: 0 0 3px;
+  font-size: 18px;
+}
+
+.figma-climate-main p {
+  margin: 0;
+  font-size: 10px;
+  color: var(--muted);
+}
+
+.figma-climate-main strong {
+  font-size: 23px;
+  color: var(--screen-accent, var(--accent));
+}
+
+.figma-climate-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.figma-climate-grid div {
+  padding: 8px;
+}
+
+.figma-climate-grid span {
+  display: block;
+  color: var(--muted);
+  font-size: 9px;
+  margin-bottom: 6px;
+}
+
+.figma-climate-grid strong {
+  font-size: 16px;
+}
+
+.figma-climate-actions {
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  bottom: 18px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.figma-climate-actions button {
+  height: 24px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.045);
+  color: var(--text);
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.figma-climate-actions button.active {
+  background: var(--screen-accent, var(--accent));
+  color: #061018;
+}
+
+/* Assistant */
+.figma-assistant-screen {
+  position: relative;
+  height: 100%;
+  padding-top: 28px;
+  display: grid;
+  grid-template-rows: 1fr auto;
+}
+
+.figma-assistant-copy {
+  padding-left: 4px;
+}
+
+.figma-assistant-copy h2 {
+  margin: 6px 0 0;
+  font-size: 20px;
+  line-height: 1.12;
+  font-weight: 500;
+}
+
+.assistant-state-label {
+  margin-top: 4px;
+  color: rgba(255,255,255,.7);
+  font-size: 11px;
+}
+
+.figma-assistant-orb {
+  position: absolute;
+  right: 58px;
+  top: 20px;
+  width: 90px;
+  height: 90px;
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(circle at 30% 30%, rgba(255,255,255,.35), rgba(0,180,255,.12));
+  color: white;
+  font-size: 28px;
+  cursor: pointer;
+  box-shadow:
+    0 0 15px rgba(0,180,255,.4),
+    0 0 45px rgba(0,180,255,.15);
+  animation: auraIdle 3s ease-in-out infinite;
+}
+
+.figma-assistant-orb.listening { animation: auraListening 1s infinite; }
+.figma-assistant-orb.thinking { animation: auraThinking 1.6s linear infinite; }
+.figma-assistant-orb.speaking { animation: auraSpeaking 1.2s infinite; }
+
+.figma-assistant-actions {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 7px;
+}
+
+.figma-assistant-actions button {
+  min-height: 46px;
+  padding: 7px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.045);
+  color: var(--text);
+  font-size: 9px;
+  cursor: pointer;
+}
+
+.figma-assistant-actions svg {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--screen-accent, var(--accent));
+  font-size: 15px;
+}
+
+/* Cabin */
+.figma-cabin-screen {
+  height: 100%;
+  padding-top: 28px;
+  display: grid;
+  grid-template-rows: 1fr auto auto;
+  gap: 10px;
+}
+
+.figma-cabin-hero {
+  min-height: 92px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background:
+    radial-gradient(circle at 82% 50%, color-mix(in srgb, var(--screen-accent, var(--accent)) 28%, transparent), transparent 38%),
+    rgba(255, 255, 255, 0.045);
+  border: 1px solid color-mix(in srgb, var(--screen-accent, var(--accent)) 22%, rgba(255, 255, 255, 0.08));
+}
+
+.figma-cabin-hero span {
+  color: var(--screen-accent, var(--accent));
+  font-size: 9px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+}
+
+.figma-cabin-hero h2 {
+  margin: 3px 0;
+  font-size: 21px;
+}
+
+.figma-cabin-hero p {
+  margin: 0;
+  max-width: 260px;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.figma-cabin-orb {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 32% 28%, rgba(255, 255, 255, 0.9), transparent 12%),
+    var(--screen-accent, var(--accent));
+  box-shadow:
+    0 0 22px var(--screen-accent, var(--accent)),
+    0 0 64px color-mix(in srgb, var(--screen-accent, var(--accent)) 65%, transparent);
+  animation: cabinOrbPulse 2.2s ease-in-out infinite;
+}
+
+.figma-cabin-modes {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.figma-cabin-modes button {
+  height: 36px;
+  border-radius: 13px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.045);
+  color: var(--text);
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  cursor: pointer;
+}
+
+.figma-cabin-modes button span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--mode-color);
+  box-shadow: 0 0 10px var(--mode-color);
+}
+
+.figma-cabin-modes button.active {
+  border-color: var(--mode-color);
+  background: color-mix(in srgb, var(--mode-color) 16%, rgba(255, 255, 255, 0.045));
+}
+
+.figma-cabin-colors {
+  height: 38px;
+  border-radius: 14px;
+  padding: 0 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.figma-cabin-colors button {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+}
+
+.figma-cabin-colors button.selected {
+  border-color: #ffffff;
+  box-shadow: 0 0 16px currentColor;
+}
+
+/* Controls */
+.figma-controls-screen {
+  height: 100%;
+  padding-top: 28px;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 10px;
+}
+
+.figma-controls-hero {
+  min-height: 72px;
+  padding: 12px 14px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background:
+    radial-gradient(circle at 85% 50%, color-mix(in srgb, var(--screen-accent, var(--accent)) 26%, transparent), transparent 42%),
+    rgba(255, 255, 255, 0.045);
+  border: 1px solid color-mix(in srgb, var(--screen-accent, var(--accent)) 22%, rgba(255, 255, 255, 0.08));
+}
+
+.figma-controls-hero span {
+  color: var(--screen-accent, var(--accent));
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.figma-controls-hero h2 {
+  margin: 3px 0;
+  font-size: 20px;
+}
+
+.figma-controls-hero p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.figma-controls-hero svg {
+  font-size: 34px;
+  color: var(--screen-accent, var(--accent));
+  filter: drop-shadow(0 0 14px var(--screen-accent, var(--accent)));
+}
+
+.figma-controls-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.figma-controls-grid button {
+  min-height: 54px;
+  padding: 10px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-align: left;
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  cursor: pointer;
+}
+
+.figma-controls-grid button.active {
+  border-color: var(--screen-accent, var(--accent));
+  background: color-mix(in srgb, var(--screen-accent, var(--accent)) 14%, rgba(255, 255, 255, 0.045));
+}
+
+.figma-controls-grid button > svg {
+  flex: 0 0 auto;
+  color: var(--screen-accent, var(--accent));
+  font-size: 17px;
+}
+
+.figma-controls-grid strong {
+  display: block;
+  font-size: 10px;
+}
+
+.figma-controls-grid span {
+  display: block;
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 8px;
+}
+
+/* Media */
+.figma-media-screen {
+  height: 100%;
+  display: grid;
+  grid-template-columns: 0.75fr 1.35fr 0.85fr;
+  gap: 10px;
+}
+
+.figma-media-art,
+.figma-media-side {
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.figma-media-art {
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(circle, rgba(139, 92, 246, 0.3), transparent 60%),
+    rgba(255, 255, 255, 0.045);
+}
+
+.figma-media-art svg,
+.figma-media-side svg {
+  color: var(--purple);
+}
+
+.figma-media-art svg {
+  font-size: 42px;
+}
+
+.figma-media-info span {
+  color: var(--purple);
+  font-size: 10px;
+  text-transform: uppercase;
+  font-weight: 800;
+}
+
+.figma-media-info h2 {
+  margin: 6px 0 2px;
+  font-size: 22px;
+}
+
+.figma-media-info p {
+  margin: 0 0 14px;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.figma-progress {
+  height: 5px;
+  margin-bottom: 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.figma-progress span {
+  display: block;
+  width: 58%;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--purple);
+  box-shadow: 0 0 14px rgba(139,92,246,0.7);
+}
+
+.figma-media-controls {
+  display: flex;
+  gap: 8px;
+}
+
+.figma-media-controls button {
+  width: 34px;
+  height: 34px;
+  border: none;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: var(--text);
+  background: rgba(255,255,255,0.08);
+  cursor: pointer;
+}
+
+.figma-media-controls button.active {
+  background: var(--purple);
+}
+
+.figma-media-side {
+  padding: 12px;
+  display: grid;
+  align-content: center;
+  gap: 5px;
+}
+
+.figma-media-side svg {
+  font-size: 24px;
+}
+
+.figma-media-side strong {
+  font-size: 13px;
+}
+
+.figma-media-side small {
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.figma-volume {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.figma-volume span {
+  width: 54px;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--purple);
+}
+
+/* Phone */
+.figma-phone-screen {
+  height: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1.05fr;
+  grid-template-rows: auto 1fr auto;
+  gap: 8px;
+}
+
+.figma-phone-header {
+  grid-column: 1 / -1;
+  height: 58px;
+  padding: 9px 12px;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background:
+    radial-gradient(circle at 85% 48%, rgba(102, 187, 106, 0.22), transparent 42%),
+    rgba(255, 255, 255, 0.045);
+  border: 1px solid rgba(102, 187, 106, 0.16);
+}
+
+.figma-phone-header span {
+  color: var(--green);
+  font-size: 9px;
+  text-transform: uppercase;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+
+.figma-phone-header h2 {
+  margin: 1px 0;
+  font-size: 18px;
+}
+
+.figma-phone-header p {
+  margin: 0;
+  font-size: 10px;
+  color: var(--muted);
+}
+
+.phone-orb {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--green);
+  color: #061018;
+  box-shadow: 0 0 22px rgba(102, 187, 106, 0.65);
+}
+
+.phone-contact-list {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 7px;
+}
+
+.phone-contact-list button {
+  height: 35px;
+  padding: 0 9px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.045);
+  color: var(--text);
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.phone-contact-list svg {
+  color: var(--green);
+}
+
+.phone-actions {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 7px;
+}
+
+.phone-actions button {
+  height: 30px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.045);
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 10px;
+  cursor: pointer;
+}
+
+.phone-actions button.active {
+  color: #061018;
+  background: var(--green);
+}
+
+/* Placeholder */
+.figma-placeholder-screen {
+  height: 100%;
+  display: grid;
+  place-items: center;
+  text-align: center;
+}
+
+.figma-placeholder-screen h2 {
+  margin: 0;
+}
+
+.figma-placeholder-screen p {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+/* ---------- Mode transition overlay ---------- */
+.mode-transition-overlay {
+  position: absolute;
+  inset: 34px 14px 42px;
+  z-index: 20;
+  border-radius: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  text-align: center;
+  color: var(--text);
+  background:
+    radial-gradient(circle at center, color-mix(in srgb, var(--screen-accent, var(--accent)) 28%, transparent), transparent 55%),
+    rgba(2, 6, 10, 0.88);
+  border: 1px solid color-mix(in srgb, var(--screen-accent, var(--accent)) 38%, transparent);
+  backdrop-filter: blur(10px);
+  animation: modeOverlayIn 0.35s ease both;
+}
+
+.mode-transition-overlay span {
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+}
+
+.mode-transition-overlay strong {
+  margin-top: 0;
+  font-size: 22px;
+  line-height: 1;
+}
+
+.mode-transition-orb {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: var(--screen-accent, var(--accent));
+  box-shadow:
+    0 0 22px var(--screen-accent, var(--accent)),
+    0 0 70px color-mix(in srgb, var(--screen-accent, var(--accent)) 65%, transparent);
+  animation: modeOrbPulse 1.1s ease-in-out infinite;
+}
+
+/* =========================================================
+   Instrument cluster
+   ========================================================= */
+
+.cluster-overlay {
+  position: absolute;
+  left: 270px;
+  top: 225px;
+  z-index: 13;
+  pointer-events: none;
+}
+
+.cluster-card {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  width: 270px;
+  height: 138px;
+  padding: 14px 18px;
+  border-radius: 30px;
+  color: var(--text);
+  background:
+    radial-gradient(circle at center, color-mix(in srgb, var(--cluster-accent) 18%, transparent), transparent 58%),
+    linear-gradient(180deg, rgba(255,255,255,0.055), rgba(255,255,255,0.015)),
+    rgba(4, 9, 14, 0.86);
+  border: 1px solid color-mix(in srgb, var(--cluster-accent) 60%, transparent);
+  box-shadow:
+    0 0 24px color-mix(in srgb, var(--cluster-accent) 35%, transparent),
+    inset 0 0 30px rgba(255, 255, 255, 0.035);
+  transition:
+    border-color 0.45s ease,
+    box-shadow 0.45s ease,
+    background 0.45s ease;
+}
+
+.cluster-top,
+.cluster-main,
+.cluster-status,
+.cluster-footer,
+.cluster-speed-limit {
+  position: relative;
+  z-index: 6;
+}
+
+.cluster-top {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: var(--cluster-accent);
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.cluster-top small {
+  color: var(--muted);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+}
+
+.cluster-main {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr 1fr;
+  align-items: center;
+  text-align: center;
+}
+
+.cluster-main strong {
+  display: block;
+  font-size: 18px;
+}
+
+.cluster-main small {
+  display: block;
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 10px;
+  text-transform: uppercase;
+}
+
+.cluster-speed strong {
+  font-size: 38px;
+  line-height: 0.95;
+}
+
+.cluster-status {
+  margin-top: 7px;
+  text-align: center;
+  color: var(--cluster-accent);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+.cluster-footer {
+  position: absolute;
+  left: 34px;
+  right: 34px;
+  bottom: 24px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+/* Blue cluster arcs */
+.cluster-arc {
+  position: absolute;
+  top: 52px;
+  width: 62px;
+  height: 76px;
+  border: 2px solid var(--cluster-accent);
+  filter: drop-shadow(0 0 10px var(--cluster-accent));
+  opacity: 0.9;
+  z-index: 3;
+}
+
+.cluster-arc.left {
+  left: -4px;
+  border-right: none;
+  border-radius: 80px 0 0 80px;
+}
+
+.cluster-arc.right {
+  right: -4px;
+  border-left: none;
+  border-radius: 0 80px 80px 0;
+}
+
+/* Cluster contextual visuals */
+.cluster-visual-area {
+  position: absolute;
+  left: 50%;
+  top: 60%;
+  width: 120px;
+  height: 72px;
+  transform: translate(-50%, -50%) scale(0.72);
+  display: grid;
+  place-items: center;
+  z-index: 1;
+  opacity: 0.32;
+  pointer-events: none;
+}
+
+.cluster-focused .cluster-visual-area {
+  opacity: 0.32;
+  transform: translate(-50%, -50%) scale(0.82);
+}
+
+.cluster-welcome-orb,
+.cluster-aura-orb {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 32% 28%, rgba(255, 255, 255, 0.95), transparent 10%),
+    radial-gradient(circle at 40% 35%, rgba(255, 255, 255, 0.35), transparent 22%),
+    var(--cluster-accent);
+  box-shadow:
+    0 0 18px var(--cluster-accent),
+    0 0 52px color-mix(in srgb, var(--cluster-accent) 65%, transparent);
+  animation: clusterOrbPulse 2.2s ease-in-out infinite;
+}
+
+.cluster-mini-car {
+  width: 34px;
+  height: 58px;
+  border-radius: 18px 18px 8px 8px;
+  background: color-mix(in srgb, var(--cluster-accent) 20%, transparent);
+  border: 1px solid var(--cluster-accent);
+  box-shadow: 0 0 18px var(--cluster-accent);
+}
+
+.cluster-nav-visual,
+.cluster-media-visual,
+.cluster-phone-visual,
+.cluster-climate-visual,
+.cluster-drive-visual,
+.cluster-assistant-visual {
+  display: grid;
+  place-items: center;
+  text-align: center;
+  transform: translateY(6px);
+}
+
+.cluster-nav-visual strong,
+.cluster-media-visual strong,
+.cluster-phone-visual strong,
+.cluster-climate-visual strong,
+.cluster-drive-visual strong,
+.cluster-assistant-visual strong {
+  display: block;
+  color: var(--text);
+  font-size: 12px;
+  line-height: 1;
+}
+
+.cluster-nav-visual small,
+.cluster-media-visual small,
+.cluster-phone-visual small,
+.cluster-climate-visual small,
+.cluster-drive-visual small,
+.cluster-assistant-visual small {
+  display: block;
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 8px;
+}
+
+.cluster-turn-arrow {
+  width: 28px;
+  height: 28px;
+  margin: 0 auto 5px;
+  border-left: 4px solid var(--cluster-accent);
+  border-bottom: 4px solid var(--cluster-accent);
+  transform: rotate(45deg);
+  filter: drop-shadow(0 0 8px var(--cluster-accent));
+  animation: clusterArrowMove 1.4s ease-in-out infinite;
+}
+
+.cluster-music-note,
+.cluster-phone-icon {
+  color: var(--cluster-accent);
+  font-size: 28px;
+  line-height: 1;
+  margin-bottom: 4px;
+  text-shadow: 0 0 16px var(--cluster-accent);
+}
+
+.cluster-climate-visual strong {
+  color: var(--cluster-accent);
+  font-size: 20px;
+}
+
+.cluster-drive-visual strong {
+  color: var(--cluster-accent);
+  font-size: 18px;
+  letter-spacing: 0.12em;
+}
+
+.cluster-health-visual {
+  position: relative;
+  width: 76px;
+  height: 76px;
+}
+
+.cluster-health-car {
+  position: absolute;
+  left: 50%;
+  top: 8px;
+  width: 34px;
+  height: 60px;
+  transform: translateX(-50%);
+  border-radius: 18px 18px 8px 8px;
+  background: rgba(102, 187, 106, 0.16);
+  border: 1px solid var(--green);
+  box-shadow: 0 0 18px var(--green);
+}
+
+.health-dot {
+  width: 9px;
+  height: 9px;
+}
+
+.health-dot.h1 { left: 14px; top: 18px; }
+.health-dot.h2 { right: 14px; top: 30px; }
+.health-dot.h3 { left: 34px; bottom: 10px; }
+
+.cluster-speed-limit {
+  position: absolute;
+  right: 72px;
+  top: 48px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: var(--text);
+  font-size: 8px;
+  font-weight: 800;
+  border: 3px solid var(--red);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* =========================================================
+   Cockpit UI focus mode
+   ========================================================= */
+
+.cockpit-focus-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  padding: 42px 56px;
+  pointer-events: auto;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 24px;
+  background:
+    radial-gradient(circle at 50% 45%, rgba(79, 195, 247, 0.08), transparent 35%),
+    rgba(1, 4, 8, 0.26);
+  backdrop-filter: blur(1.5px);
+}
+
+.cockpit-focus-header {
+  padding-top: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cockpit-focus-header span {
+  display: block;
+  color: var(--screen-accent, var(--accent));
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.18em;
+}
+
+.cockpit-focus-header strong {
+  display: block;
+  margin-top: 4px;
+  color: var(--text);
+  font-size: 22px;
+}
+
+.cockpit-focus-header button {
+  height: 38px;
+  padding: 0 18px;
+  border-radius: 999px;
+  border: 1px solid rgba(79, 195, 247, 0.6);
+  background: rgba(5, 10, 16, 0.7);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.cockpit-focus-screens {
+  width: min(1120px, 100%);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 0.76fr 1.42fr;
+  gap: 30px;
+  align-items: center;
+  justify-content: center;
+  transform: translateY(-70px);
+}
+
+.cockpit-focus-cluster,
+.cockpit-focus-center {
+  display: grid;
+  place-items: center;
+}
+
+.cockpit-focus-layer .center-screen-overlay,
+.cockpit-focus-layer .cluster-overlay {
+  position: static;
+  inset: auto;
+  transform: none;
+  z-index: auto;
+}
+
+.cockpit-focus-layer .center-screen-panel.figma-hmi {
+  width: 680px;
+  height: 304px;
+  min-height: 304px;
+  max-height: 304px;
+  padding: 14px 18px 54px;
+  border-radius: 28px;
+}
+
+.cockpit-focus-layer .figma-content {
+  height: 230px;
+  overflow: hidden;
+  position: relative;
+}
+
+.cockpit-focus-layer .figma-bottom-nav {
+  left: 18px;
+  right: 18px;
+  bottom: 12px;
+  height: 38px;
+}
+
+.cockpit-focus-layer .cluster-card,
+.cockpit-focus-layer .cluster-off-placeholder {
+  width: 390px;
+  height: 184px;
+  padding: 18px 26px 34px;
+  border-radius: 32px;
+}
+
+.cockpit-focus-layer .cluster-main {
+  margin-top: 24px;
+}
+
+.cockpit-focus-layer .cluster-main strong {
+  font-size: 25px;
+}
+
+.cockpit-focus-layer .cluster-speed strong {
+  font-size: 52px;
+}
+
+.cockpit-focus-layer .cluster-status {
+  margin-top: 12px;
+}
+
+.cockpit-focus-layer .cluster-footer {
+  bottom: 28px;
+}
+
+/* =========================================================
+   HUD
+   ========================================================= */
+
+.hud-overlay {
+  display: none;
+}
+
+/* =========================================================
+   Mode colors / panel pulse
+   ========================================================= */
+
+.mode-comfort .cluster-card,
+.mode-comfort .center-screen-panel {
+  animation: modePulseBlue 0.55s ease;
+}
+
+.mode-sport .cluster-card,
+.mode-sport .center-screen-panel {
+  animation: modePulseRed 0.55s ease;
+}
+
+.mode-eco .cluster-card,
+.mode-eco .center-screen-panel {
+  animation: modePulseGreen 0.55s ease;
+}
+
+/* =========================================================
+   Responsive safety
+   ========================================================= */
+
+@media (max-width: 1100px) {
+  .cockpit-focus-layer {
+    padding: 34px 28px;
+  }
+
+  .cockpit-focus-screens {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .cockpit-focus-layer .cluster-card {
+    width: 360px;
+    height: 174px;
+  }
+
+  .cockpit-focus-layer .center-screen-panel.figma-hmi {
+    width: 680px;
+    max-width: 92vw;
+  }
+}
+
+/* =========================================================
+   Animations
+   ========================================================= */
+
+@keyframes auraFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes startPulse {
+  0%,
+  100% {
+    box-shadow:
+      0 0 18px color-mix(in srgb, var(--screen-accent, var(--accent)) 35%, transparent),
+      inset 0 0 22px rgba(255, 255, 255, 0.08);
+  }
+
+  50% {
+    box-shadow:
+      0 0 42px color-mix(in srgb, var(--screen-accent, var(--accent)) 70%, transparent),
+      inset 0 0 28px rgba(255, 255, 255, 0.12);
+  }
+}
+
+@keyframes bootOrbPulse {
+  0%,
+  100% {
+    transform: scale(0.94);
+  }
+
+  50% {
+    transform: scale(1.08);
+  }
+}
+
+@keyframes welcomeBootIn {
+  from {
+    opacity: 0;
+    filter: blur(14px);
+    transform: scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    filter: blur(0);
+    transform: scale(1);
+  }
+}
+
+@keyframes welcomeGlowPulse {
+  0%,
+  100% {
+    opacity: 0.45;
+    transform: scale(0.92);
+  }
+
+  50% {
+    opacity: 0.95;
+    transform: scale(1.08);
+  }
+}
+
+@keyframes welcomeCarReveal {
+  from {
+    opacity: 0;
+    transform: translateX(28px) scale(0.94);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes welcomeCardsIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes driveEnergyMove {
+  0% {
+    opacity: 0.45;
+    transform: translateX(-22%);
+  }
+
+  50% {
+    opacity: 1;
+    transform: translateX(12%);
+  }
+
+  100% {
+    opacity: 0.45;
+    transform: translateX(-22%);
+  }
+}
+
+@keyframes cabinOrbPulse {
+  0%,
+  100% {
+    transform: scale(0.94);
+  }
+
+  50% {
+    transform: scale(1.08);
+  }
+}
+
+@keyframes auraIdle {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.06);
+  }
+}
+
+@keyframes auraListening {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.15);
+  }
+}
+
+@keyframes auraThinking {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes auraSpeaking {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  25% {
+    transform: scale(1.18);
+  }
+
+  50% {
+    transform: scale(1.08);
+  }
+
+  75% {
+    transform: scale(1.2);
+  }
+}
+
+@keyframes modeOverlayIn {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+    filter: blur(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+    filter: blur(0);
+  }
+}
+
+@keyframes modeOrbPulse {
+  0%,
+  100% {
+    transform: scale(0.9);
+  }
+
+  50% {
+    transform: scale(1.12);
+  }
+}
+
+@keyframes clusterScreenIn {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+    filter: blur(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+    filter: blur(0);
+  }
+}
+
+@keyframes clusterOrbPulse {
+  0%,
+  100% {
+    transform: scale(0.94);
+  }
+
+  50% {
+    transform: scale(1.08);
+  }
+}
+
+@keyframes clusterArrowMove {
+  0%,
+  100% {
+    transform: rotate(45deg) translate(0, 0);
+  }
+
+  50% {
+    transform: rotate(45deg) translate(4px, -4px);
+  }
+}
+
+@keyframes modePulseBlue {
+  0% { filter: brightness(0.8); }
+  50% { filter: brightness(1.25); }
+  100% { filter: brightness(1); }
+}
+
+@keyframes modePulseRed {
+  0% { filter: brightness(0.8) saturate(1); }
+  50% { filter: brightness(1.3) saturate(1.35); }
+  100% { filter: brightness(1) saturate(1); }
+}
+
+@keyframes modePulseGreen {
+  0% { filter: brightness(0.8); }
+  50% { filter: brightness(1.25); }
+  100% { filter: brightness(1); }
+}
+
+.cockpit-focus-header {
+  position: relative;
+  z-index: 120;
+  pointer-events: auto;
+}
+
+.cockpit-focus-header button {
+  position: relative;
+  z-index: 130;
+  pointer-events: auto;
+}
+
+.cockpit-focus-screens {
+  position: relative;
+  z-index: 80;
+}
+
+.cockpit-focus-layer {
+  pointer-events: auto;
+}
+
+.cockpit-focus-header button {
+  transition:
+    background 0.22s ease,
+    box-shadow 0.22s ease,
+    border-color 0.22s ease,
+    transform 0.22s ease;
+}
+
+.cockpit-focus-header button:hover,
+.cockpit-focus-header button:focus-visible {
+  background: rgba(79, 195, 247, 0.18);
+  border-color: rgba(79, 195, 247, 0.95);
+  box-shadow:
+    0 0 18px rgba(79, 195, 247, 0.35),
+    inset 0 0 18px rgba(79, 195, 247, 0.08);
+  transform: translateY(-1px);
+}
+
+.cockpit-focus-layer {
+  opacity: 0;
+  transform: scale(0.96);
+  filter: blur(12px);
+
+  transition:
+    opacity 0.45s ease,
+    transform 0.45s ease,
+    filter 0.45s ease;
+}
+
+.cockpit-focus-layer.visible {
+  opacity: 1;
+  transform: scale(1);
+  filter: blur(0);
+}
