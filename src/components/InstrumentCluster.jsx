@@ -1,137 +1,111 @@
 const clusterModes = {
-  comfort: {
-    modeLabel: "COMFORT",
-    gear: "P",
-    accent: "#4FC3F7",
-    speed: "0",
-  },
-  sport: {
-    modeLabel: "SPORT",
-    gear: "D",
-    accent: "#FF4D4D",
-    speed: "0",
-  },
-  eco: {
-    modeLabel: "ECO",
-    gear: "D",
-    accent: "#66BB6A",
-    speed: "0",
-  },
+  comfort: { modeLabel: "COMFORT", gear: "P", accent: "#4FC3F7", speed: "0" },
+  sport: { modeLabel: "SPORT", gear: "D", accent: "#FF4D4D", speed: "0" },
+  eco: { modeLabel: "ECO", gear: "D", accent: "#66BB6A", speed: "0" },
 };
 
 const clusterScreens = {
-  welcome: {
-    status: "READY",
-    title: "AURA DRIVE",
-    subtitle: "Vehicle Ready",
-    visual: "welcome",
-    speed: "0",
-    gear: "P",
-  },
-  home: {
-    status: "READY",
-    title: "82%",
-    subtitle: "Battery",
-    visual: "car",
-    speed: "0",
-    gear: "P",
-  },
-  navigation: {
-    status: "NAVIGATION",
-    title: "400 m",
-    subtitle: "Turn Right",
-    visual: "navigation",
-    speed: "65",
-    gear: "D",
-  },
-  media: {
-    status: "MEDIA",
-    title: "Night Drive",
-    subtitle: "AURA Sound",
-    visual: "media",
-    speed: "0",
-    gear: "P",
-  },
-  phone: {
-    status: "PHONE",
-    title: "Connected",
-    subtitle: "Ricardo Phone",
-    visual: "phone",
-    speed: "0",
-    gear: "P",
-  },
-  climate: {
-    status: "CLIMATE",
-    title: "21°C",
-    subtitle: "Cabin Auto",
-    visual: "climate",
-    speed: "0",
-    gear: "P",
-  },
-  drive: {
-    status: "DRIVE MODE",
-    title: "Dynamic",
-    subtitle: "Cabin Behavior",
-    visual: "drive",
-    speed: "0",
-    gear: "D",
-  },
-  health: {
-    status: "SYSTEMS OK",
-    title: "Optimal",
-    subtitle: "Vehicle Health",
-    visual: "health",
-    speed: "0",
-    gear: "P",
-  },
-  assistant: {
-    status: "AURA ACTIVE",
-    title: "Listening",
-    subtitle: "Voice Assistant",
-    visual: "assistant",
-    speed: "0",
-    gear: "P",
-  },
-  more: {
-    status: "CONTROLS",
-    title: "More",
-    subtitle: "Vehicle Options",
-    visual: "car",
-    speed: "0",
-    gear: "P",
-  },
-  controls: {
-    status: "CONTROLS",
-    title: "Vehicle",
-    subtitle: "Cabin Controls",
-    visual: "car",
-    speed: "0",
-    gear: "P",
-  },
-  cabin: {
-    status: "CABIN",
-    title: "Interior",
-    subtitle: "Mood Active",
-    visual: "welcome",
-    speed: "0",
-    gear: "P",
-  },
+  welcome: { status: "READY", title: "AURA DRIVE", subtitle: "Vehicle Ready", visual: "welcome", speed: "0", gear: "P" },
+  home: { status: "READY", title: "82%", subtitle: "Battery", visual: "car", speed: "0", gear: "P" },
+  navigation: { status: "NAVIGATION", title: "400 m", subtitle: "Turn Right", visual: "navigation", speed: "65", gear: "D" },
+  media: { status: "MEDIA", title: "Night Drive", subtitle: "AURA Sound", visual: "media", speed: "0", gear: "P" },
+  phone: { status: "PHONE", title: "Connected", subtitle: "Ricardo Phone", visual: "phone", speed: "0", gear: "P" },
+  climate: { status: "CLIMATE", title: "21°C", subtitle: "Cabin Auto", visual: "climate", speed: "0", gear: "P" },
+  drive: { status: "DRIVE MODE", title: "Dynamic", subtitle: "Cabin Behavior", visual: "drive", speed: "0", gear: "D" },
+  health: { status: "SYSTEMS OK", title: "Optimal", subtitle: "Vehicle Health", visual: "health", speed: "0", gear: "P" },
+  assistant: { status: "AURA ACTIVE", title: "Listening", subtitle: "Voice Assistant", visual: "assistant", speed: "0", gear: "P" },
+  more: { status: "CONTROLS", title: "More", subtitle: "Vehicle Options", visual: "car", speed: "0", gear: "P" },
+  controls: { status: "CONTROLS", title: "Vehicle", subtitle: "Cabin Controls", visual: "car", speed: "0", gear: "P" },
+  cabin: { status: "CABIN", title: "Interior", subtitle: "Mood Active", visual: "welcome", speed: "0", gear: "P" },
 };
 
 export default function InstrumentCluster({
   activeMode,
   activeScreen,
   isFocused,
+  bootStage = "home",
 }) {
   const mode = clusterModes[activeMode] || clusterModes.comfort;
   const screen = clusterScreens[activeScreen] || clusterScreens.home;
 
+  const isOff = bootStage === "off";
+  const isBooting = ["boot", "initializing", "ready", "welcome"].includes(bootStage);
+
   const accent =
-    activeScreen === "health" || activeScreen === "phone"
+    isOff
+      ? "#4FC3F7"
+      : activeScreen === "health" || activeScreen === "phone"
       ? "#66BB6A"
       : activeScreen === "media"
       ? "#8B5CF6"
       : mode.accent;
+
+  if (isOff) {
+    return (
+      <div
+        className={`cluster-overlay ${isFocused ? "cluster-focused" : ""}`}
+        style={{ "--cluster-accent": accent }}
+      >
+        <div className="cluster-card cluster-system-off">
+          <div className="cluster-arc left" />
+          <div className="cluster-arc right" />
+
+          <div className="cluster-top">
+            <span>P</span>
+            <small>AURA DRIVE</small>
+          </div>
+
+          <div className="cluster-off-state">
+            <span>SYSTEM OFF</span>
+            <strong>Press START</strong>
+            <small>Cockpit systems offline</small>
+          </div>
+
+          <div className="cluster-footer">
+            <span>--:--</span>
+            <span>--°C</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (isBooting) {
+    return (
+      <div
+        className={`cluster-overlay ${isFocused ? "cluster-focused" : ""}`}
+        style={{ "--cluster-accent": accent }}
+      >
+        <div className="cluster-card cluster-booting">
+          <div className="cluster-arc left" />
+          <div className="cluster-arc right" />
+
+          <div className="cluster-top">
+            <span>P</span>
+            <small>AURA DRIVE</small>
+          </div>
+
+          <div className="cluster-boot-core">
+            <div className="cluster-boot-orb" />
+            <strong>
+              {bootStage === "welcome" ? "WELCOME" : "INITIALIZING"}
+            </strong>
+            <small>
+              {bootStage === "boot" && "Starting cockpit"}
+              {bootStage === "initializing" && "Systems online"}
+              {bootStage === "ready" && "Vehicle ready"}
+              {bootStage === "welcome" && "Hello Ricardo"}
+            </small>
+          </div>
+
+          <div className="cluster-footer">
+            <span>10:40</span>
+            <span>21°C</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
