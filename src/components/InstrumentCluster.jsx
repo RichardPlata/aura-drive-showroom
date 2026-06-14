@@ -7,13 +7,13 @@ const clusterModes = {
 const clusterScreens = {
   welcome: { status: "READY", title: "AURA DRIVE", subtitle: "Vehicle Ready", visual: "welcome", speed: "0", gear: "P" },
   home: { status: "READY", title: "82%", subtitle: "Battery", visual: "car", speed: "0", gear: "P" },
-  navigation: { status: "NAVIGATION", title: "400 m", subtitle: "Turn Right", visual: "navigation", speed: "65", gear: "D" },
-  media: { status: "MEDIA", title: "Night Drive", subtitle: "AURA Sound", visual: "media", speed: "0", gear: "P" },
-  phone: { status: "PHONE", title: "Connected", subtitle: "Ricardo Phone", visual: "phone", speed: "0", gear: "P" },
-  climate: { status: "CLIMATE", title: "21°C", subtitle: "Cabin Auto", visual: "climate", speed: "0", gear: "P" },
+  navigation: { status: "NAVIGATION", title: "400 m", subtitle: "Av. Libertador", visual: "navigation", speed: "65", gear: "D" },
+  media: { status: "NOW PLAYING", title: "Midnight City", subtitle: "M83", visual: "media", speed: "65", gear: "D" },
+  phone: { status: "INCOMING CALL", title: "Sarah Johnson", subtitle: "Mobile", visual: "phone", speed: "65", gear: "D" },
+  climate: { status: "CLIMATE", title: "21°C", subtitle: "Driver / Passenger Sync", visual: "climate", speed: "0", gear: "P" },
   drive: { status: "DRIVE MODE", title: "Dynamic", subtitle: "Cabin Behavior", visual: "drive", speed: "0", gear: "D" },
-  health: { status: "SYSTEMS OK", title: "Optimal", subtitle: "Vehicle Health", visual: "health", speed: "0", gear: "P" },
-  assistant: { status: "AURA ACTIVE", title: "Listening", subtitle: "Voice Assistant", visual: "assistant", speed: "0", gear: "P" },
+  health: { status: "SYSTEMS OK", title: "96/100", subtitle: "Vehicle Health Score", visual: "health", speed: "0", gear: "P" },
+  assistant: { status: "AURA ASSISTANT", title: "Listening...", subtitle: "Awaiting command", visual: "assistant", speed: "65", gear: "D" },
   more: { status: "CONTROLS", title: "More", subtitle: "Vehicle Options", visual: "car", speed: "0", gear: "P" },
   controls: { status: "CONTROLS", title: "Vehicle", subtitle: "Cabin Controls", visual: "car", speed: "0", gear: "P" },
   cabin: { status: "CABIN", title: "Interior", subtitle: "Mood Active", visual: "welcome", speed: "0", gear: "P" },
@@ -182,7 +182,13 @@ export default function InstrumentCluster({
 
           {screen.visual === "health" && (
             <div className="cluster-health-visual">
-              <div className="cluster-health-car" />
+              <div className="cluster-health-score">
+                <strong>96/100</strong>
+                <small>Health Score</small>
+            </div>
+
+            <div className="cluster-health-car" />
+
               <span className="health-dot h1" />
               <span className="health-dot h2" />
               <span className="health-dot h3" />
@@ -192,6 +198,7 @@ export default function InstrumentCluster({
           {screen.visual === "assistant" && (
             <div className="cluster-assistant-visual">
               <div className="cluster-aura-orb" />
+              <div className="cluster-aura-pulse" />
               <strong>{screen.title}</strong>
               <small>{screen.subtitle}</small>
             </div>

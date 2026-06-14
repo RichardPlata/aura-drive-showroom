@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState} from "react";
 import {
   FiNavigation,
   FiMusic,
@@ -15,8 +15,6 @@ import {
   FiVolume2,
   FiSliders,
   FiTruck,
-  FiCheckCircle,
-  FiMapPin,
   FiMic,
   FiSun,
   FiMoreHorizontal,
@@ -25,6 +23,10 @@ import {
 
 import MediaScreen from "./MediaScreen";
 import PhoneScreen from "./PhoneScreen";
+import VehicleHealthScreen from "./VehicleHealthScreen";
+import NavigationScreen from "./NavigationScreen";
+import ClimateScreen from "./ClimateScreen";
+import AuraAssistantScreen from "./AuraAssistantScreen";
 
 const navItems = [
   { icon: <FiHome />, screen: "home" },
@@ -71,26 +73,49 @@ export default function CenterScreenOverlay({
   playWelcomeSequence,
   onStartVehicle,
 }) {
-  const [assistantState, setAssistantState] = useState("idle");
+  
   const [modeTransition, setModeTransition] = useState(null);
+  const [screenTransition, setScreenTransition] = useState(false);
 
   const currentMode = driveModes[activeMode] || driveModes.comfort;
   const showBack = !["welcome", "home", "more"].includes(activeScreen);
 
-  const openScreen = (screen) => setActiveScreen(screen);
-  const goHome = () => setActiveScreen("home");
+  const openScreen = (screen) => {
+    if (screen === activeScreen) return;
 
-  const startAssistantDemo = () => {
-    setAssistantState("listening");
-    setTimeout(() => setAssistantState("thinking"), 2000);
-    setTimeout(() => setAssistantState("speaking"), 3500);
-    setTimeout(() => setAssistantState("idle"), 6500);
+        setScreenTransition(true);
+
+        setTimeout(() => {
+          setActiveScreen(screen);
+
+       setTimeout(() => {
+         setScreenTransition(false);
+       }, 160);
+    }, 260);
   };
+  const goHome = () => {
+  if (activeScreen === "home") return;
+
+  setScreenTransition(true);
+
+  setTimeout(() => {
+    setActiveScreen("home");
+
+    setTimeout(() => {
+      setScreenTransition(false);
+    }, 160);
+  }, 260);
+};
+
 
   const handleModeChange = (modeKey) => {
+    setActiveMode(modeKey);
+    setAmbientColor(null);
     setModeTransition(modeKey);
-    setTimeout(() => setActiveMode(modeKey), 350);
-    setTimeout(() => setModeTransition(null), 1400);
+
+    setTimeout(() => {
+      setModeTransition(null);
+    }, 900);
   };
 
   const isBooting = ["boot", "initializing", "battery", "ready", "welcome"].includes(
@@ -234,11 +259,17 @@ export default function CenterScreenOverlay({
         </div>
 
         <div className="figma-content">
-          {showBack && (
-            <button className="figma-back" onClick={goHome}>
-              <FiArrowLeft /> Back
-            </button>
-          )}
+          {screenTransition && (
+            <div className="screen-transition-overlay">
+            <div className="screen-transition-orb" />
+        </div>
+        )}
+
+        {showBack && (
+          <button className="figma-back" onClick={goHome}>
+          <FiArrowLeft /> Back
+          </button>
+        )}
 
           {modeTransition && (
             <div className="mode-transition-overlay">
@@ -313,174 +344,50 @@ export default function CenterScreenOverlay({
                 <div className="figma-drive-lines" />
               </div>
 
-              <div className="figma-drive-features">
-                <div>
-                  <FiZap />
-                  <span>Sport Acceleration</span>
-                </div>
-                <div>
-                  <FiTarget />
-                  <span>Firm Steering</span>
-                </div>
-                <div>
-                  <FiSliders />
-                  <span>Fast Response</span>
-                </div>
-                <div>
-                  <FiVolume2 />
-                  <span>Dynamic Sound</span>
-                </div>
-              </div>
+              <div className="drive-mode-description">
+  {activeMode === "comfort" && (
+    <>
+      <strong>Comfort Mode</strong>
+      <span>
+        Balanced steering, smooth acceleration and everyday driving comfort.
+      </span>
+    </>
+  )}
+
+  {activeMode === "sport" && (
+    <>
+      <strong>Sport Mode</strong>
+      <span>
+        Sharper throttle response and more dynamic vehicle behavior.
+      </span>
+    </>
+  )}
+
+  {activeMode === "eco" && (
+    <>
+      <strong>Eco Mode</strong>
+      <span>
+        Optimized efficiency and reduced energy consumption.
+      </span>
+    </>
+  )}
+</div>
             </section>
           )}
 
-          {activeScreen === "navigation" && (
-            <section className="figma-navigation-screen">
-              <div className="figma-nav-info">
-                <FiNavigation />
-                <h2>400 m</h2>
-                <p>Turn right</p>
-                <small>
-                  <FiMapPin /> Av. Libertador
-                </small>
-              </div>
+          {activeScreen === "navigation" && <NavigationScreen />}
 
-              <div className="figma-nav-map">
-                <div className="figma-nav-grid" />
-                <div className="figma-nav-route" />
-                <div className="figma-nav-car" />
-              </div>
-
-              <div className="figma-nav-stats">
-                <div>
-                  <strong>18 min</strong>
-                  <span>ETA 10:58</span>
-                </div>
-                <div>
-                  <strong>16 km</strong>
-                  <span>Distance</span>
-                </div>
-                <div>
-                  <strong>82%</strong>
-                  <span>Arrival battery</span>
-                </div>
-                <button>End trip</button>
-              </div>
-            </section>
-          )}
-
-          {activeScreen === "health" && (
-            <section className="figma-health-screen">
-              <div className="figma-health-copy">
-                <h2>Vehicle Health</h2>
-                <p>All systems are operating normally.</p>
-
-                <div className="figma-health-list">
-                  {["Battery", "Tires", "Brakes", "Climate", "Systems"].map(
-                    (item) => (
-                      <div key={item}>
-                        <span>
-                          <FiCheckCircle /> {item}
-                        </span>
-                        <strong>
-                          {item === "Systems" ? "Online" : "Optimal"}
-                        </strong>
-                      </div>
-                    )
-                  )}
-                </div>
-              </div>
-
-              <div className="figma-health-car">
-                <div className="health-car-shape" />
-                <div className="health-node n1" />
-                <div className="health-node n2" />
-                <div className="health-node n3" />
-              </div>
-            </section>
-          )}
+          {activeScreen === "health" && <VehicleHealthScreen />}
 
           {activeScreen === "assistant" && (
-            <section className="figma-assistant-screen">
-              <div className="figma-assistant-copy">
-                <h2>
-                  Hello Ricardo,
-                  <br />
-                  how can I help?
-                </h2>
-
-                <p className="assistant-state-label">
-                  {assistantState === "idle" && "Ready"}
-                  {assistantState === "listening" && "Listening..."}
-                  {assistantState === "thinking" && "Processing request..."}
-                  {assistantState === "speaking" && "Navigation started"}
-                </p>
-              </div>
-
-              <button
-                className={`figma-assistant-orb ${assistantState}`}
-                onClick={startAssistantDemo}
-              >
-                <FiMic />
-              </button>
-
-              <div className="figma-assistant-actions">
-                <button onClick={() => openScreen("navigation")}>
-                  <FiNavigation /> Navigate home
-                </button>
-
-                <button onClick={() => openScreen("health")}>
-                  <FiTruck /> Vehicle status
-                </button>
-
-                <button onClick={() => openScreen("drive")}>
-                  <FiZap /> Drive modes
-                </button>
-
-                <button onClick={() => openScreen("cabin")}>
-                  <FiSun /> Cabin ambience
-                </button>
-              </div>
-            </section>
+             <AuraAssistantScreen
+                setActiveScreen={setActiveScreen}
+                setActiveMode={setActiveMode}
+                setAmbientColor={setAmbientColor}
+             />
           )}
 
-          {activeScreen === "climate" && (
-            <section className="figma-climate-screen">
-              <div className="figma-climate-main">
-                <div>
-                  <h2>Climate</h2>
-                  <p>Cabin temperature</p>
-                </div>
-
-                <strong>21°C</strong>
-              </div>
-
-              <div className="figma-climate-grid">
-                <div>
-                  <span>Driver</span>
-                  <strong>21°C</strong>
-                </div>
-                <div>
-                  <span>Passenger</span>
-                  <strong>22°C</strong>
-                </div>
-                <div>
-                  <span>Fan</span>
-                  <strong>Auto</strong>
-                </div>
-                <div>
-                  <span>Mode</span>
-                  <strong>{currentMode.label}</strong>
-                </div>
-              </div>
-
-              <div className="figma-climate-actions">
-                <button className="active">AUTO</button>
-                <button>A/C</button>
-                <button>SYNC</button>
-              </div>
-            </section>
-          )}
+          {activeScreen === "climate" && <ClimateScreen activeMode={activeMode} />}
 
           {activeScreen === "cabin" && (
             <section className="figma-cabin-screen">
